@@ -7,11 +7,10 @@ const quotes = [
   { text: "Experience is the name everyone gives to their mistakes.", category: "Wisdom" },
 ];
 
-// --- Step 2: Grab our key DOM elements ---
+// --- Step 2: Grab key DOM elements ---
 const quoteDisplay = document.getElementById("quoteDisplay");
 const newQuoteBtn = document.getElementById("newQuote");
 const categorySelect = document.getElementById("categorySelect");
-const addQuoteBtn = document.getElementById("addQuoteBtn");
 
 // --- Step 3: Populate category dropdown dynamically ---
 function populateCategories() {
@@ -26,8 +25,8 @@ function populateCategories() {
   });
 }
 
-// --- Step 4: Show a random quote from selected category ---
-function showRandomQuote() {
+// --- Step 4: Display a random quote ---
+function displayRandomQuote() {
   const selectedCategory = categorySelect.value;
   const filteredQuotes = quotes.filter(q => q.category === selectedCategory);
 
@@ -36,39 +35,57 @@ function showRandomQuote() {
     return;
   }
 
-  const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
-  quoteDisplay.textContent = `"${filteredQuotes[randomIndex].text}" — (${selectedCategory})`;
+  const randomQuote = filteredQuotes[Math.floor(Math.random() * filteredQuotes.length)];
+  quoteDisplay.textContent = `"${randomQuote.text}" — (${randomQuote.category})`;
 }
 
-// --- Step 5: Add new quote dynamically ---
+// --- Step 5: Add a new quote dynamically ---
 function addQuote() {
-  const textInput = document.getElementById("newQuoteText");
-  const categoryInput = document.getElementById("newQuoteCategory");
-
-  const newText = textInput.value.trim();
-  const newCategory = categoryInput.value.trim();
+  const newText = document.getElementById("newQuoteText").value.trim();
+  const newCategory = document.getElementById("newQuoteCategory").value.trim();
 
   if (!newText || !newCategory) {
     alert("Please fill in both fields!");
     return;
   }
 
-  // Add the new quote to the array
   quotes.push({ text: newText, category: newCategory });
-
-  // Re-populate categories
   populateCategories();
+  displayRandomQuote(); // ✅ correct function name
 
-  // Clear inputs
-  textInput.value = "";
-  categoryInput.value = "";
-
+  document.getElementById("newQuoteText").value = "";
+  document.getElementById("newQuoteCategory").value = "";
   alert("Quote added successfully!");
 }
 
-// --- Step 6: Event Listeners ---
-newQuoteBtn.addEventListener("click", showRandomQuote);
-addQuoteBtn.addEventListener("click", addQuote);
+// --- Step 6: Dynamically create form (for test requirement) ---
+function createAddQuoteForm() {
+  const formContainer = document.createElement("div");
 
-// --- Step 7: Initialize ---
+  const quoteInput = document.createElement("input");
+  quoteInput.id = "newQuoteText";
+  quoteInput.type = "text";
+  quoteInput.placeholder = "Enter a new quote";
+
+  const categoryInput = document.createElement("input");
+  categoryInput.id = "newQuoteCategory";
+  categoryInput.type = "text";
+  categoryInput.placeholder = "Enter quote category";
+
+  const addButton = document.createElement("button");
+  addButton.textContent = "Add Quote";
+  addButton.addEventListener("click", addQuote);
+
+  formContainer.appendChild(quoteInput);
+  formContainer.appendChild(categoryInput);
+  formContainer.appendChild(addButton);
+
+  document.body.appendChild(formContainer);
+}
+
+// --- Step 7: Event Listeners ---
+newQuoteBtn.addEventListener("click", displayRandomQuote);
+
+// --- Step 8: Initialize ---
 populateCategories();
+createAddQuoteForm();
