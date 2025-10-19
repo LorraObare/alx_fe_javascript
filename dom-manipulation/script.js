@@ -26,7 +26,7 @@ function populateCategories() {
 }
 
 // --- Step 4: Display a random quote ---
-function displayRandomQuote() {
+function showRandomQuote() {
   const selectedCategory = categorySelect.value;
   const filteredQuotes = quotes.filter(q => q.category === selectedCategory);
 
@@ -51,7 +51,7 @@ function addQuote() {
 
   quotes.push({ text: newText, category: newCategory });
   populateCategories();
-  displayRandomQuote(); // ✅ correct function name
+  showRandomQuote(); // ✅ correct function name
 
   document.getElementById("newQuoteText").value = "";
   document.getElementById("newQuoteCategory").value = "";
@@ -84,7 +84,7 @@ function createAddQuoteForm() {
 }
 
 // --- Step 7: Event Listeners ---
-newQuoteBtn.addEventListener("click", displayRandomQuote);
+newQuoteBtn.addEventListener("click", showRandomQuote);
 
 // --- Step 8: Initialize ---
 populateCategories();
