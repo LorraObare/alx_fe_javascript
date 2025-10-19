@@ -138,3 +138,46 @@ function importFromJsonFile(event) {
   };
   fileReader.readAsText(event.target.files[0]);
 }
+
+// --- Populate Categories Dropdown ---
+function populateCategories() {
+  const categoryFilter = document.getElementById("categoryFilter");
+  const categories = ["all", ...new Set(quotes.map(q => q.category))];
+
+  // Clear dropdown
+  categoryFilter.innerHTML = "";
+
+  // Populate categories
+  categories.forEach(cat => {
+    const option = document.createElement("option");
+    option.value = cat;
+    option.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+    categoryFilter.appendChild(option);
+  });
+
+  // Restore last selected category
+  categoryFilter.value = lastSelectedCategory;
+}
+
+// --- Filter Quotes Based on Category ---
+function filterQuotes() {
+  const selectedCategory = document.getElementById("categoryFilter").value;
+  localStorage.setItem("selectedCategory", selectedCategory);
+  lastSelectedCategory = selectedCategory;
+
+  const quoteDisplay = document.getElementById("quoteDisplay");
+  let filteredQuotes = quotes;
+
+  if (selectedCategory !== "all") {
+    filteredQuotes = quotes.filter(q => q.category === selectedCategory);
+  }
+
+  // Show filtered quotes
+  if (filteredQuotes.length === 0) {
+    quoteDisplay.innerHTML = `<p>No quotes found for <em>${selectedCategory}</em>.</p>`;
+  } else {
+    quoteDisplay.innerHTML = filteredQuotes
+      .map(q => `<p>"${q.text}" <em>(${q.category})</em></p>`)
+      .join("");
+  }
+}

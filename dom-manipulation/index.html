@@ -57,6 +57,13 @@
     <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
     <button id="addQuoteBtn">Add Quote</button>
   </div>
+  <!-- Category Filter -->
+<div>
+  <label for="categoryFilter">Filter by category:</label>
+  <select id="categoryFilter" onchange="filterQuotes()">
+    <option value="all">All Categories</option>
+  </select>
+</div>
 <div>
   <!-- Button to show a random quote -->
   <button onclick="showRandomQuote()">Show Random Quote</button>
