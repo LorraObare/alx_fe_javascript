@@ -58,34 +58,47 @@ function addQuote() {
   alert("Quote added successfully!");
 }
 
-// --- Step 6: Dynamically create form (for test requirement) ---
-function createAddQuoteForm() {
-  const formContainer = document.createElement("div");
 
-  const quoteInput = document.createElement("input");
-  quoteInput.id = "newQuoteText";
-  quoteInput.type = "text";
-  quoteInput.placeholder = "Enter a new quote";
+// --- Step 6: Event Listeners ---
+newQuoteBtn.addEventListener("click", showRandomQuote);
+document.getElementById("addQuoteBtn").addEventListener("click", addQuote);
 
-  const categoryInput = document.createElement("input");
-  categoryInput.id = "newQuoteCategory";
-  categoryInput.type = "text";
-  categoryInput.placeholder = "Enter quote category";
+// --- Step 7: Initialize ---
+populateCategories();
 
-  const addButton = document.createElement("button");
-  addButton.textContent = "Add Quote";
-  addButton.addEventListener("click", addQuote);
 
-  formContainer.appendChild(quoteInput);
-  formContainer.appendChild(categoryInput);
-  formContainer.appendChild(addButton);
+//Storing Data
+localStorage.setItem("quotes", JSON.stringify(quotes));
 
-  document.body.appendChild(formContainer);
+//Retrieving Data
+const storedQuotes = JSON.parse(localStorage.getItem("quotes"));
+if (storedQuotes) {
+  quotes.push(...storedQuotes);
 }
 
-// --- Step 7: Event Listeners ---
-newQuoteBtn.addEventListener("click", showRandomQuote);
+// 1️⃣ Add new quote to array
+  quotes.push({ text: newText, category: newCategory });
 
-// --- Step 8: Initialize ---
-populateCategories();
-createAddQuoteForm();
+  // 2️⃣ Save updated array to localStorage (persistent storage)
+  localStorage.setItem("quotes", JSON.stringify(quotes));
+
+  // 3️⃣ Update dropdown and show confirmation
+  populateCategories();
+  quoteDisplay.textContent = `New quote added to category: ${newCategory}`;
+  
+  // 4️⃣ Clear input fields
+  document.getElementById("newQuoteText").value = "";
+  document.getElementById("newQuoteCategory").value = "";
+
+
+// --- Step 6: Load quotes from localStorage if available ---
+window.onload = function() {
+  const savedQuotes = JSON.parse(localStorage.getItem("quotes"));
+  if (savedQuotes && savedQuotes.length > 0) {
+    quotes = savedQuotes;
+  }
+  populateCategories();
+};
+
+// --- Step 7: Event Listener for “Show New Quote” ---
+newQuoteBtn.addEventListener("click", showRandomQuote);
