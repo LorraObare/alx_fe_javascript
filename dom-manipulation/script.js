@@ -137,6 +137,8 @@ async function syncQuotes() {
   
   populateCategories();
   showRandomQuote();
+  // Notify user about successful sync
+  alert("Quotes synced with server!");
 }
 
 // --- Conflict Resolution ---
