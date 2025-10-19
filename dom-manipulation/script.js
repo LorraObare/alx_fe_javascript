@@ -1,5 +1,5 @@
 // --- Step 1: Define our initial data structure ---
-const quotes = [
+let quotes = [
   { text: "The best way to predict the future is to invent it.", category: "Inspiration" },
   { text: "Code is like humor. When you have to explain it, it's bad.", category: "Programming" },
   { text: "Faith does not make things easy, it makes them possible.", category: "Faith" },
@@ -8,6 +8,19 @@ const quotes = [
 ];
 
 let lastSelectedCategory = "all";
+
+// --- Load quotes from localStorage on startup ---
+function loadQuotes() {
+  const savedQuotes = localStorage.getItem("quotes");
+  if (savedQuotes) {
+    quotes = JSON.parse(savedQuotes);
+  }
+}
+
+// --- Save quotes to localStorage ---
+function saveQuotes() {
+  localStorage.setItem("quotes", JSON.stringify(quotes));
+}
 
 // --- Step 2: Grab key DOM elements ---
 const quoteDisplay = document.getElementById("quoteDisplay");
@@ -65,6 +78,9 @@ async function addQuote() {
   const newQuote = { text: newText, category: newCategory };
   quotes.push(newQuote);
   
+  // Save to localStorage
+  saveQuotes();
+  
   // Post to server
   await postQuoteToServer(newQuote);
   
@@ -114,8 +130,11 @@ async function fetchQuotesFromServer() {
 async function syncQuotes() {
   const serverQuotes = await fetchQuotesFromServer();
   const resolved = resolveConflicts(quotes, serverQuotes);
-  quotes.length = 0;
-  quotes.push(...resolved);
+  quotes = resolved;
+  
+  // Save updated quotes to localStorage
+  saveQuotes();
+  
   populateCategories();
   showRandomQuote();
 }
@@ -164,6 +183,7 @@ function importFromJsonFile(event) {
       const importedQuotes = JSON.parse(e.target.result);
       if (Array.isArray(importedQuotes)) {
         quotes.push(...importedQuotes);
+        saveQuotes();
         populateCategories();
         alert("Quotes imported successfully!");
       } else {
@@ -185,5 +205,6 @@ categoryFilter.addEventListener("change", filterQuotes);
 setInterval(syncQuotes, 60000);
 
 // --- Initialize ---
+loadQuotes();
 populateCategories();
 showRandomQuote();
