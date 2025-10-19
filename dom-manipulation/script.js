@@ -183,7 +183,7 @@ function filterQuotes() {
 }
  
 // --- Step 1: Simulate Server Fetch ---
-async function fetchServerQuotes() {
+async function fetchQuotesFromServer() {
   // Mock API (pretend endpoint)
   const response = await fetch("https://jsonplaceholder.typicode.com/posts?_limit=3");
   const data = await response.json();
@@ -202,10 +202,10 @@ async function syncWithServer() {
   status.textContent = "Syncing with server...";
 
   try {
-    const serverQuotes = await fetchServerQuotes();
+    const serverQuotes = await fetchQuotesFromServer();
     const merged = resolveConflicts(quotes, serverQuotes);
     quotes = merged;
-    saveQuotes();
+    serverQuotes();
     populateCategories();
     filterQuotes();
     status.style.color = "green";
