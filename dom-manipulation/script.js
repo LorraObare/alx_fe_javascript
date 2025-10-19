@@ -181,3 +181,69 @@ function filterQuotes() {
       .join("");
   }
 }
+ 
+// --- Step 1: Simulate Server Fetch ---
+async function fetchServerQuotes() {
+  // Mock API (pretend endpoint)
+  const response = await fetch("https://jsonplaceholder.typicode.com/posts?_limit=3");
+  const data = await response.json();
+
+  // Convert mock data to quote objects
+  return data.map(item => ({
+    text: item.title,
+    category: "Server"
+  }));
+}
+
+// --- Step 2: Sync with Server ---
+async function syncWithServer() {
+  const status = document.getElementById("syncStatus");
+  status.style.color = "blue";
+  status.textContent = "Syncing with server...";
+
+  try {
+    const serverQuotes = await fetchServerQuotes();
+    const merged = resolveConflicts(quotes, serverQuotes);
+    quotes = merged;
+    saveQuotes();
+    populateCategories();
+    filterQuotes();
+    status.style.color = "green";
+    status.textContent = "✅ Sync complete (server data merged)";
+  } catch (err) {
+    status.style.color = "red";
+    status.textContent = "❌ Sync failed. Try again later.";
+  }
+}
+
+// --- Step 3: Conflict Resolution ---
+function resolveConflicts(localQuotes, serverQuotes) {
+  const combined = [...localQuotes];
+  let conflicts = 0;
+
+  serverQuotes.forEach(serverQ => {
+    const match = localQuotes.find(localQ => localQ.text === serverQ.text);
+    if (!match) {
+      combined.push(serverQ); // new server quote
+    } else if (match.category !== serverQ.category) {
+      conflicts++;
+      // Strategy: Server data takes precedence
+      match.category = serverQ.category;
+    }
+  });
+
+  if (conflicts > 0) {
+    alert(`⚠️ ${conflicts} conflicts found. Server data took precedence.`);
+  }
+
+  return combined;
+}
+
+// --- Periodic Auto-Sync (every 60 seconds) ---
+setInterval(syncWithServer, 60000);
+
+// --- Initialize on Load ---
+window.onload = () => {
+  populateCategories();
+  filterQuotes();
+};

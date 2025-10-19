@@ -75,6 +75,12 @@
   <label for="importFile">Import Quotes (JSON):</label>
   <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" title="Select a JSON file to import" placeholder="Select JSON file" aria-label="Import quotes from JSON file" />
 </div>
+<!-- Sync Controls -->
+<div>
+  <button onclick="syncWithServer()">Sync with Server</button>
+  <div id="syncStatus" style="margin-top:10px; color:green;"></div>
+</div>
+
 
 <script src="script.js"></script>
 </body>
