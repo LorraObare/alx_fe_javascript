@@ -60,10 +60,15 @@
 <div>
   <!-- Button to show a random quote -->
   <button onclick="showRandomQuote()">Show Random Quote</button>
-
- 
-
-  <script src="script.js"></script>
 </div>
+ 
+<!-- Export and Import JSON Controls -->
+<div>
+  <button onclick="exportToJsonFile()">Export Quotes</button>
+  <label for="importFile">Import Quotes (JSON):</label>
+  <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" title="Select a JSON file to import" placeholder="Select JSON file" aria-label="Import quotes from JSON file" />
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>

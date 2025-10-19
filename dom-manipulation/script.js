@@ -102,3 +102,39 @@ window.onload = function() {
 
 // --- Step 7: Event Listener for “Show New Quote” ---
 newQuoteBtn.addEventListener("click", showRandomQuote);
+
+// --- Export quotes to JSON file ---
+function exportToJsonFile() {
+  const dataStr = JSON.stringify(quotes, null, 2);
+  const blob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  // Create a temporary link to trigger download
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "quotes.json";
+  link.click();
+
+  // Free up memory
+  URL.revokeObjectURL(url);
+}
+
+// --- Step 6: Import quotes from JSON file ---
+function importFromJsonFile(event) {
+  const fileReader = new FileReader();
+  fileReader.onload = function(e) {
+    try {
+      const importedQuotes = JSON.parse(e.target.result);
+      if (Array.isArray(importedQuotes)) {
+        quotes.push(...importedQuotes);
+        saveQuotes();
+        alert("Quotes imported successfully!");
+      } else {
+        alert("Invalid JSON format. Expected an array of quotes.");
+      }
+    } catch (err) {
+      alert("Error reading JSON file. Please check the file format.");
+    }
+  };
+  fileReader.readAsText(event.target.files[0]);
+}
